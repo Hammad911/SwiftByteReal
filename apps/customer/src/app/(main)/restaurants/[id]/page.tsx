@@ -10,6 +10,7 @@ import {
   Plus, Minus, ShoppingBag, Flame, Leaf, Loader2,
 } from "lucide-react";
 import { restaurantApi } from "@/lib/api";
+import { fallbackBannerUrl, fallbackMenuItemPhotoUrl } from "@/lib/foodImages";
 import { useCartStore, selectCartSubtotal, selectCartItemCount } from "@/store/cartStore";
 
 // ── Normalise API data to the shape the UI uses ──────────────────────────────
@@ -23,7 +24,7 @@ function normaliseRestaurant(r: any) {
       name:        item.name,
       description: item.description || "",
       price:       item.price,
-      photo:       item.photo || `https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&auto=format&fit=crop`,
+      photo:       item.photo || fallbackMenuItemPhotoUrl(item.id),
       popular:     item.isFeatured ?? false,
       tags:        item.dietaryTags ?? [],
     })),
@@ -47,7 +48,7 @@ function normaliseRestaurant(r: any) {
     address:      r.address || "Islamabad",
     distance:     "—",
     hours:        r.isOpen ? "Open Now" : "Closed",
-    banner:       r.banner || `https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1600&auto=format&fit=crop`,
+    banner:       r.banner || fallbackBannerUrl(r.id),
     isOpen:       r.isOpen ?? true,
     menu,
   };

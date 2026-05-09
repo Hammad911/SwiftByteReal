@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Star, Clock, Bike, Search, SlidersHorizontal, X, Flame, Loader2 } from "lucide-react";
 import { restaurantApi } from "@/lib/api";
+import { fallbackBannerUrl } from "@/lib/foodImages";
 
 const SORT_OPTIONS = [
   { value: "rating",   label: "Top Rated" },
@@ -25,7 +26,7 @@ function normalise(r: any) {
     prepTime:    r.prepTime ? `${r.prepTime}–${r.prepTime + 10} min` : "20–30 min",
     deliveryFee: r.deliveryFee ?? 0,
     minOrder:    r.minOrder ?? 0,
-    banner:      r.banner || `https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&auto=format&fit=crop`,
+    banner:      r.banner || fallbackBannerUrl(r.id),
     isOpen:      r.isOpen ?? true,
     cuisines,
   };

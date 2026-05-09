@@ -7,6 +7,38 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
+/** Varied menu photos; stable per restaurant/category/item/name. */
+const SEED_MENU_PHOTOS = [
+  "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=85",
+  "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=85",
+  "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&q=85",
+  "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=85",
+  "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=600&q=85",
+  "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=85",
+  "https://images.unsplash.com/photo-1623341214825-9f4f963727da?w=600&q=85",
+  "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=600&q=85",
+  "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=85",
+  "https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=600&q=85",
+  "https://images.unsplash.com/photo-1543339308-43e59d6b73a6?w=600&q=85",
+  "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600&q=85",
+  "https://images.unsplash.com/photo-1476224209411-9a64f84aa4bd?w=600&q=85",
+  "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600&q=85",
+  "https://images.unsplash.com/photo-1563379091339-03c21e2c0e3b?w=600&q=85",
+  "https://images.unsplash.com/photo-1603088521525-1b097b2bbfc1?w=600&q=85",
+  "https://images.unsplash.com/photo-1598515214211-7577aa9e7484?w=600&q=85",
+  "https://images.unsplash.com/photo-1612874477003-887f8eed50f8?w=600&q=85",
+];
+
+function seedMenuPhoto(restaurantId: string, catIdx: number, itemIdx: number, name: string): string {
+  const key = `${restaurantId}-${catIdx}-${itemIdx}-${name}`;
+  let h = 2166136261;
+  for (let i = 0; i < key.length; i++) {
+    h ^= key.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return SEED_MENU_PHOTOS[Math.abs(h) % SEED_MENU_PHOTOS.length];
+}
+
 async function main() {
   console.log("🌱 Seeding database...");
 
@@ -129,6 +161,7 @@ async function main() {
       address: "234 W 42nd St, New York, NY 10036",
       lat: 40.7557,
       lng: -73.9881,
+      banner: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1600&q=85",
     },
     {
       name: "Pizza Palazzo",
@@ -142,6 +175,7 @@ async function main() {
       address: "500 8th Ave, New York, NY 10018",
       lat: 40.7505,
       lng: -73.9934,
+      banner: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=1600&q=85",
     },
     {
       name: "Sushi Sakura",
@@ -155,6 +189,7 @@ async function main() {
       address: "145 E 49th St, New York, NY 10017",
       lat: 40.7563,
       lng: -73.9703,
+      banner: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=1600&q=85",
     },
     {
       name: "Spice Garden",
@@ -168,6 +203,7 @@ async function main() {
       address: "321 Lexington Ave, New York, NY 10016",
       lat: 40.7487,
       lng: -73.9768,
+      banner: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=1600&q=85",
     },
     {
       name: "Dragon Palace",
@@ -181,6 +217,7 @@ async function main() {
       address: "88 Mott St, New York, NY 10013",
       lat: 40.7155,
       lng: -73.9976,
+      banner: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=1600&q=85",
     },
     {
       name: "Taco Fiesta",
@@ -194,6 +231,7 @@ async function main() {
       address: "167 2nd Ave, New York, NY 10003",
       lat: 40.7284,
       lng: -73.9835,
+      banner: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=1600&q=85",
     },
     {
       name: "Green Bowl",
@@ -207,6 +245,7 @@ async function main() {
       address: "455 Park Ave S, New York, NY 10016",
       lat: 40.7445,
       lng: -73.9843,
+      banner: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1600&q=85",
     },
     {
       name: "The Breakfast Club",
@@ -220,6 +259,7 @@ async function main() {
       address: "789 Amsterdam Ave, New York, NY 10025",
       lat: 40.7893,
       lng: -73.9709,
+      banner: "https://images.unsplash.com/photo-1533085230417-61bad90a9abd?w=1600&q=85",
     },
     {
       name: "Thai Orchid",
@@ -233,6 +273,7 @@ async function main() {
       address: "342 W 46th St, New York, NY 10036",
       lat: 40.7601,
       lng: -73.9878,
+      banner: "https://images.unsplash.com/photo-1584270354945-1cd512b73f1a?w=1600&q=85",
     },
     {
       name: "Sweet Temptations",
@@ -246,6 +287,7 @@ async function main() {
       address: "205 W 57th St, New York, NY 10019",
       lat: 40.7658,
       lng: -73.9792,
+      banner: "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=1600&q=85",
     },
   ];
 
@@ -900,6 +942,7 @@ async function main() {
             name: item.name,
             description: item.description,
             price: item.price,
+            photo: seedMenuPhoto(restaurant.id, catIdx, itemIdx, item.name),
             isAvailable: true,
             dietaryTags: item.dietaryTags || [],
             isFeatured: item.isFeatured || false,

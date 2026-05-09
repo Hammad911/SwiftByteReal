@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { fallbackBannerUrl } from "@/lib/foodImages";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Heart, Star, ArrowUpRight, Loader2 } from "lucide-react";
@@ -15,7 +16,7 @@ function normalise(r: any, index: number) {
     cuisine:  cuisines.map((c: string) => c.charAt(0).toUpperCase() + c.slice(1)).join(", ") || "Various",
     time:     r.prepTime ? `${r.prepTime} min` : "25 min",
     rating:   r.rating ?? 4.5,
-    image:    r.banner || `https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&auto=format&fit=crop`,
+    image:    r.banner || fallbackBannerUrl(r.id),
     featured: index === 0,
   };
 }
