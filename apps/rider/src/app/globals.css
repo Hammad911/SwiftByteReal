@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --night:    #0D0B08;
+  --surface:  #161410;
+  --elevated: #1F1C18;
+  --gold:     #F5A623;
+  --flame:    #E8372A;
+  --cream:    #F5ECD7;
+  --ink-2:    #9E8E78;
+  --ink-3:    #4A4035;
+}
+
+html, body {
+  background-color: var(--night);
+  color: var(--cream);
+  font-family: 'Lora', Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--ink-3); border-radius: 999px; }
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

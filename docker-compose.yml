@@ -1,0 +1,126 @@
+version: "3.9"
+
+services:
+  # ─── PostgreSQL Database ───────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: swiftbyte-postgres
+    environment:
+      POSTGRES_USER: swiftbyte
+      POSTGRES_PASSWORD: swiftbyte_dev_password
+      POSTGRES_DB: swiftbyte
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U swiftbyte"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis ────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: swiftbyte-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── API Server ───────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: swiftbyte-api
+    environment:
+      DATABASE_URL: postgresql://swiftbyte:swiftbyte_dev_password@postgres:5432/swiftbyte
+      REDIS_URL: redis://redis:6379
+      JWT_ACCESS_SECRET: swiftbyte-access-secret-dev
+      JWT_REFRESH_SECRET: swiftbyte-refresh-secret-dev
+      PORT: 4000
+      NODE_ENV: development
+      CLIENT_URL: http://localhost:3000
+      RESTAURANT_URL: http://localhost:3001
+      RIDER_URL: http://localhost:3002
+      ADMIN_URL: http://localhost:3003
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./apps/api/src:/app/apps/api/src
+    restart: unless-stopped
+
+  # ─── Customer App ─────────────────────────────────────────────────────────
+  customer:
+    build:
+      context: .
+      dockerfile: apps/customer/Dockerfile
+    container_name: swiftbyte-customer
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+      NEXT_PUBLIC_SOCKET_URL: http://localhost:4000
+      NEXT_PUBLIC_GOOGLE_MAPS_KEY: ${GOOGLE_MAPS_API_KEY}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  # ─── Restaurant Dashboard ─────────────────────────────────────────────────
+  restaurant:
+    build:
+      context: .
+      dockerfile: apps/restaurant/Dockerfile
+    container_name: swiftbyte-restaurant
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+      NEXT_PUBLIC_SOCKET_URL: http://localhost:4000
+    ports:
+      - "3001:3001"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  # ─── Rider App ────────────────────────────────────────────────────────────
+  rider:
+    build:
+      context: .
+      dockerfile: apps/rider/Dockerfile
+    container_name: swiftbyte-rider
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+      NEXT_PUBLIC_SOCKET_URL: http://localhost:4000
+    ports:
+      - "3002:3002"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  # ─── Admin Panel ─────────────────────────────────────────────────────────
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    container_name: swiftbyte-admin
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+    ports:
+      - "3003:3003"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

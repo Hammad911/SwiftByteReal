@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --night:    #0D0B08;
+  --surface:  #161410;
+  --elevated: #1F1C18;
+  --gold:     #F5A623;
+  --flame:    #E8372A;
+  --cream:    #F5ECD7;
+  --ink-2:    #9E8E78;
+  --ink-3:    #4A4035;
+}
+
+html, body {
+  background-color: var(--night);
+  color: var(--cream);
+  font-family: 'Lora', Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--ink-3); border-radius: 999px; }
+
+.badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 999px; font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+.badge-active   { background: rgba(74,222,128,0.12);  color: #4ade80; border: 1px solid rgba(74,222,128,0.3);  }
+.badge-pending  { background: rgba(245,166,35,0.12); color: #F5A623; border: 1px solid rgba(245,166,35,0.3); }
+.badge-suspended{ background: rgba(232,55,42,0.12);  color: #f87171; border: 1px solid rgba(232,55,42,0.3);  }
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
