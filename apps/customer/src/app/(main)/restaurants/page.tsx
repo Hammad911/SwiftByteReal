@@ -8,6 +8,19 @@ import { Star, Clock, Bike, Search, SlidersHorizontal, X, Flame, Loader2 } from 
 import { restaurantApi } from "@/lib/api";
 import { fallbackBannerUrl } from "@/lib/foodImages";
 
+type RestaurantListing = {
+  id: string;
+  name: string;
+  description?: string;
+  rating?: number;
+  prepTime?: number;
+  deliveryFee?: number;
+  minOrder?: number;
+  banner?: string;
+  isOpen?: boolean;
+  cuisineTypes?: string[];
+};
+
 const SORT_OPTIONS = [
   { value: "rating",   label: "Top Rated" },
   { value: "delivery", label: "Fastest Delivery" },
@@ -37,7 +50,7 @@ export default function RestaurantsPage() {
   const [activeCuisine, setActiveCuisine] = useState("All");
   const [sortBy, setSortBy]           = useState("rating");
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<RestaurantListing[]>({
     queryKey: ["restaurants-listing"],
     queryFn: () => restaurantApi.list({ limit: 50 }).then((r) => r.data.data.data ?? []),
     staleTime: 30_000,
