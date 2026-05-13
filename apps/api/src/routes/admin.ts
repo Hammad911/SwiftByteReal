@@ -51,7 +51,7 @@ router.get("/analytics", authenticate, requireRole("admin"), async (req: AuthReq
     });
 
     const topRestaurantDetails = await Promise.all(
-      topRestaurants.map(async (r) => {
+      topRestaurants.map(async (r: any) => {
         const restaurant = await prisma.restaurant.findUnique({
           where: { id: r.restaurantId },
           select: { id: true, name: true, logo: true },

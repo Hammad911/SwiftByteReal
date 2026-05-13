@@ -12,7 +12,7 @@ router.get("/", authenticate, async (req: AuthRequest, res: Response) => {
       orderBy: { createdAt: "desc" },
       take: 50,
     });
-    const unreadCount = notifications.filter((n) => !n.read).length;
+    const unreadCount = notifications.filter((n: any) => !n.read).length;
     res.json({ success: true, data: { notifications, unreadCount } });
   } catch {
     res.status(500).json({ success: false, error: "Failed to fetch notifications" });

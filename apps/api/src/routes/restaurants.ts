@@ -132,7 +132,7 @@ router.post("/", authenticate, async (req: AuthRequest, res: Response) => {
     try {
       const admins = await prisma.user.findMany({ where: { role: "admin" } });
       await Promise.all(
-        admins.map((admin) =>
+        admins.map((admin: any) =>
           prisma.notification.create({
             data: {
               userId: admin.id,
@@ -218,11 +218,11 @@ router.get("/", async (req: AuthRequest, res: Response) => {
       const userLng = parseFloat(lng);
 
       result = restaurants
-        .map((r) => ({
+        .map((r: any) => ({
           ...r,
           distance: haversineDistance(userLat, userLng, r.lat, r.lng),
         }))
-        .sort((a, b) => (a as any).distance - (b as any).distance);
+        .sort((a: any, b: any) => (a as any).distance - (b as any).distance);
     }
 
     res.json({
@@ -352,11 +352,11 @@ router.get("/:id/analytics", authenticate, requireRole("restaurant", "admin"), a
     }
 
     const topItems = Array.from(itemCounts.entries())
-      .map(([id, data]) => ({ menuItemId: id, ...data }))
-      .sort((a, b) => b.count - a.count)
+      .map(([id, data]: [string, any]) => ({ menuItemId: id, ...data }))
+      .sort((a: any, b: any) => b.count - a.count)
       .slice(0, 10);
 
-    const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+    const totalRevenue = orders.reduce((sum: number, o: any) => sum + o.total, 0);
     const avgOrderValue = orders.length > 0 ? totalRevenue / orders.length : 0;
     const cancelledOrders = await prisma.order.count({
       where: { restaurantId: req.params.id, status: "cancelled", createdAt: { gte: startDate } },

@@ -28,7 +28,7 @@ router.get("/nearby", authenticate, async (req: AuthRequest, res: Response) => {
 
     const nearbyRiders = (
       await Promise.all(
-        riders.map(async (rider) => {
+        riders.map(async (rider: any) => {
           const location = await getRiderLocation(rider.userId);
           if (!location) return null;
           const distance = haversineDistance(userLat, userLng, location.lat, location.lng);
