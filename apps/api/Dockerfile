@@ -28,4 +28,4 @@ COPY --from=builder /app/apps/api ./apps/api
 COPY --from=builder /app/packages ./packages
 WORKDIR /app/apps/api
 EXPOSE 4000
-CMD ["node", "dist/index.js"]
+CMD ["sh", "-c", "npm run db:push && npm run db:seed && node dist/index.js"]

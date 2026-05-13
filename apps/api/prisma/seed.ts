@@ -42,6 +42,12 @@ function seedMenuPhoto(restaurantId: string, catIdx: number, itemIdx: number, na
 async function main() {
   console.log("🌱 Seeding database...");
 
+  const existingUsers = await prisma.user.count();
+  if (existingUsers > 0) {
+    console.log(`ℹ️  Database already seeded (${existingUsers} users found). Skipping seed.`);
+    return;
+  }
+
   // ─── Clean existing data ────────────────────────────────────────────────────
   await prisma.loyaltyPoint.deleteMany();
   await prisma.payout.deleteMany();
