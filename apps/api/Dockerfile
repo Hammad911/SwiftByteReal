@@ -14,7 +14,7 @@ FROM deps AS builder
 COPY packages/ ./packages/
 COPY apps/api/ ./apps/api/
 RUN cd apps/api && npx prisma generate
-RUN cd apps/api && npx tsc -p tsconfig.json || true
+RUN cd apps/api && npm run build
 
 # Runtime
 FROM base AS runner
@@ -24,4 +24,4 @@ COPY --from=builder /app/apps/api ./apps/api
 COPY --from=builder /app/packages ./packages
 WORKDIR /app/apps/api
 EXPOSE 4000
-CMD ["node", "-r", "tsx/register", "src/index.ts"]
+CMD ["node", "dist/index.js"]
