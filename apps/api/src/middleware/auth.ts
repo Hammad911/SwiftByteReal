@@ -2,17 +2,28 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { ACCESS_SECRET } from "../utils/jwt";
 
-export interface AuthRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    role: string;
-    name: string;
-    roles?: string[];
-  };
+export interface AuthUser {
+  id: string;
+  email: string;
+  role: string;
+  name: string;
+  roles?: string[];
+  restaurantId?: string;
+  riderId?: string;
 }
 
-export function authenticate(req: AuthRequest, res: Response, next: NextFunction): void {
+declare global {
+  namespace Express {
+    interface User extends AuthUser {}
+    interface Request {
+      user?: User;
+    }
+  }
+}
+
+export type AuthRequest = Request;
+
+export function authenticate(req: Request, res: Response, next: NextFunction): void {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith("Bearer ")) {
     res.status(401).json({ success: false, error: "No token provided" });
@@ -21,13 +32,7 @@ export function authenticate(req: AuthRequest, res: Response, next: NextFunction
 
   const token = authHeader.split(" ")[1];
   try {
-    const payload = jwt.verify(token, ACCESS_SECRET) as {
-      id: string;
-      email: string;
-      role: string;
-      name: string;
-      roles?: string[];
-    };
+    const payload = jwt.verify(token, ACCESS_SECRET) as AuthUser;
     req.user = payload;
     next();
   } catch {
@@ -36,7 +41,7 @@ export function authenticate(req: AuthRequest, res: Response, next: NextFunction
 }
 
 export function requireRole(...roles: string[]) {
-  return (req: AuthRequest, res: Response, next: NextFunction): void => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user) {
       res.status(401).json({ success: false, error: "Not authenticated" });
       return;
@@ -49,7 +54,7 @@ export function requireRole(...roles: string[]) {
   };
 }
 
-export function optionalAuth(req: AuthRequest, res: Response, next: NextFunction): void {
+export function optionalAuth(req: Request, res: Response, next: NextFunction): void {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith("Bearer ")) {
     next();
@@ -58,13 +63,7 @@ export function optionalAuth(req: AuthRequest, res: Response, next: NextFunction
 
   const token = authHeader.split(" ")[1];
   try {
-    const payload = jwt.verify(token, ACCESS_SECRET) as {
-      id: string;
-      email: string;
-      role: string;
-      name: string;
-      roles?: string[];
-    };
+    const payload = jwt.verify(token, ACCESS_SECRET) as AuthUser;
     req.user = payload;
   } catch {}
   next();

@@ -32,7 +32,8 @@ async function ensureRiderRoleGranted(userId: string): Promise<void> {
     where: { id: userId },
     select: { roles: true },
   });
-  if (!u?.roles.includes("rider")) {
+  if (!u) return;
+  if (!u.roles.includes("rider")) {
     await prisma.user.update({
       where: { id: userId },
       data: { roles: [...u.roles, "rider"] },

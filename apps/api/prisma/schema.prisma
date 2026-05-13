@@ -189,6 +189,7 @@ model Restaurant {
   ownerId        String       @unique
   name           String
   description    String       @db.Text
+  phone          String?
   logo           String?
   banner         String?
   cuisineTypes   String[]

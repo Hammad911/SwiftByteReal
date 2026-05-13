@@ -12,6 +12,7 @@
     "resolveJsonModule": true,
     "declaration": true,
     "declarationMap": true,
+    "ignoreDeprecations": "6.0",
     "sourceMap": true,
     "paths": {
       "@swiftbyte/shared": ["../../packages/shared/src/index.ts"]
