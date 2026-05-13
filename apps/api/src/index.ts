@@ -27,6 +27,9 @@ import applicationsRouter from "./routes/applications";
 const app = express();
 const httpServer = http.createServer(app);
 
+// Railway sits behind a proxy, so Express must trust forwarded headers for IP-based middleware.
+app.set("trust proxy", 1);
+
 // ─── CORS ─────────────────────────────────────────────────────────────────────
 const allowedOrigins = [
   process.env.CLIENT_URL || "http://localhost:3000",
